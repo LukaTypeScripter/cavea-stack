@@ -7,7 +7,8 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<Listing />} ></Route>
+        <Route path='/' element={<Listing />} ></Route>
+          <Route path='/:id' element={<Listing />} ></Route>
           <Route path='/Inventory/create' element={< CreateList/>} ></Route>
         </Routes>
       </BrowserRouter>
