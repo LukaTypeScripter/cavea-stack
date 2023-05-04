@@ -95,21 +95,21 @@ app.get('/users/:id', (req, res) => {
 });
 
 // update a user by id
-app.put('/users/:id', (req, res) => {
-  const { id } = req.params;
-  const { name, location, price } = req.body;
-  User.update({ name, location, price }, { where: { id } })
-    .then(([rowsUpdated]) => {
-      if (rowsUpdated > 0) {
-        res.json({ message: 'User updated successfully' });
-      } else {
-        res.status(404).json({ error: 'User not found' });
-      }
-    })
-    .catch((error) => {
-      res.status(400).json({ error: error.message });
-    });
-});
+// app.put('/users/:id', (req, res) => {
+//   const { id } = req.params;
+//   const { name, location, price } = req.body;
+//   User.update({ name, location, price }, { where: { id } })
+//     .then(([rowsUpdated]) => {
+//       if (rowsUpdated > 0) {
+//         res.json({ message: 'User updated successfully' });
+//       } else {
+//         res.status(404).json({ error: 'User not found' });
+//       }
+//     })
+//     .catch((error) => {
+//       res.status(400).json({ error: error.message });
+//     });
+// });
 
 // delete a user by id
 app.delete('/users/:id', (req, res) => {
