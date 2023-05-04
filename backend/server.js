@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const Sequelize = require('sequelize');
-
+const bodyParser = require('body-parser');
 const app = express();
 
 // Allow only requests from port 3000
@@ -9,7 +9,7 @@ const corsOptions = {
   origin: 'http://localhost:3000'
 };
 app.use(cors(corsOptions));
-
+app.use(bodyParser.json());
 // create a new Sequelize instance with the database connection details
 const sequelize = new Sequelize('postgres', 'postgres', 'Tuta68686', {
   host: 'localhost',
