@@ -2,7 +2,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FieldValues,  useForm } from 'react-hook-form';
-
+import { log } from "console";
+import { useNavigate } from 'react-router-dom';
 export default function CreateList() {
   const [id, setId] = useState("");
   const [name, setName] = useState("");
@@ -10,11 +11,25 @@ export default function CreateList() {
   const [location, setLocation] = useState("");
   const [inptData,setInptData] = useState({})
   const { register, handleSubmit, formState: { errors } } = useForm();
-
+  const navigate = useNavigate();
 
   const onSubmit = (data: FieldValues) => {
     setInptData(data)
+    fetch('http://localhost:8080/users', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(data)
+})
+.then(response => response.json())
+.then(data => {
+  console.log(data)
+  navigate('/')
+})
+.catch(error => console.error(error));
   };
+ console.log(inptData);
  
   
   return (
@@ -31,7 +46,7 @@ export default function CreateList() {
                 <div className="col-lg-12">
                   <div className="form-group">
                     <label>ადგილმდებარეობა:</label>
-                    <select className="form-control" id="exampleSelect1" onChange={(e) => setLocation(e.target.value)}>
+                    <select className="form-control" id="exampleSelect1" {...register("location", { required: true })}>
                       <option>მთავარი ოფისი</option>
                       <option>კავეა გალერია</option>
                       <option>კავეა თბილისი მოლი</option>
@@ -44,7 +59,7 @@ export default function CreateList() {
                   <div className="col-lg-12">
                       <div className={`form-group ${errors.name ? "is-invalid" : ""} `}>
                         <label htmlFor="">სახელი</label>
-                        <input type="text" className="form-control" {...register("name", { required: true })} />
+                        <input type="text" className="form-control"  {...register("name", { required: true })}/>
                         {errors.name && <div className="text-danger">შეიყვანეთ სახელი</div>}
                       </div>
                     </div>
