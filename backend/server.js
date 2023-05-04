@@ -1,33 +1,40 @@
 const express = require('express');
+const cors = require('cors');
 const Sequelize = require('sequelize');
 
 const app = express();
 
+// Allow only requests from port 3000
+const corsOptions = {
+  origin: 'http://localhost:3000'
+};
+app.use(cors(corsOptions));
+
 // create a new Sequelize instance with the database connection details
-const sequelize = new Sequelize('caveadb', 'postgres', 'Tuta68686', {
+const sequelize = new Sequelize('postgres', 'postgres', 'Tuta68686', {
   host: 'localhost',
   dialect: 'postgres',
 });
 
 // define a User model
 const User = sequelize.define('user', {
-  firstName: {
+  name: {
     type: Sequelize.STRING,
   },
-  lastName: {
+  location: {
     type: Sequelize.STRING,
   },
-  email: {
+  price: {
     type: Sequelize.STRING,
     unique: true,
   },
 });
 const testData = [];
-for (let i = 0; i < 300000; i++) {
+for (let i = 0; i < 300; i++) {
   testData.push({
-    firstName: `User ${i}`,
-    lastName: `Last Name ${i}`,
-    email: `user${i}@example.com`,
+    name: `Item ${i}`,
+    location: `Location ${i}`,
+    price: `${i * 10}.00`,
   });
 }
 
@@ -50,8 +57,8 @@ sequelize.sync()
 
 // create a new user
 app.post('/users', (req, res) => {
-  const { firstName, lastName, email } = req.body;
-  User.create({ firstName, lastName, email })
+  const { name, location, price } = req.body;
+  User.create({ name, location, price })
     .then((user) => {
       res.status(201).json(user);
     })
@@ -90,8 +97,8 @@ app.get('/users/:id', (req, res) => {
 // update a user by id
 app.put('/users/:id', (req, res) => {
   const { id } = req.params;
-  const { firstName, lastName, email } = req.body;
-  User.update({ firstName, lastName, email }, { where: { id } })
+  const { name, location, price } = req.body;
+  User.update({ name, location, price }, { where: { id } })
     .then(([rowsUpdated]) => {
       if (rowsUpdated > 0) {
         res.json({ message: 'User updated successfully' });
