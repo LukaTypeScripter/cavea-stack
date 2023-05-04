@@ -1,6 +1,7 @@
 import { log } from 'console';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+
 type User = {
     id: number;
     name: string;
