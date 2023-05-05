@@ -57,15 +57,24 @@ sequelize.sync()
 
 // create a new user
 app.post('/users', (req, res) => {
-  const { name, location, price } = req.body;
-  User.create({ name, location, price })
-    .then((user) => {
-      res.status(201).json(user);
+  const { name, price, location } = req.body;
+  
+  User.create({ name, price, location })
+    .then(() => {
+      // find all users with the new item and sort the results
+      const order = req.query.sort === 'price'
+        ? [['price', 'ASC']]
+        : [['name', 'ASC']];
+      
+      return User.findAll({
+        where: { location },
+        order,
+      });
     })
-    .catch((error) => {
-      res.status(400).json({ error: error.message });
-    });
+    .then(users => res.json(users))
+    .catch(error => res.status(500).json({ error: error.message }));
 });
+
 
 // get all users
 app.get('/users', (req, res) => {
@@ -77,7 +86,6 @@ app.get('/users', (req, res) => {
       res.status(500).json({ error: error.message });
     });
 });
-
 // get a user by id
 app.get('/users/:id', (req, res) => {
   const { id } = req.params;
