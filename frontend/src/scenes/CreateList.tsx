@@ -2,15 +2,17 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FieldValues,  useForm } from 'react-hook-form';
-import { log } from "console";
+
 import { useNavigate } from 'react-router-dom';
-import { Button, Modal } from "react-bootstrap";
+
 export default function CreateList() {
  
   const [inptData,setInptData] = useState({})
+  {/**ეს არის useForm რომლითაც შეგვიძლია მარტივად გავაკეთოთ ვალიდაციები. */}
   const { register, handleSubmit, formState: { errors } } = useForm();
+  {/**ეს კი გვეხმარება დავბრუნდეთ როუტზე */}
   const navigate = useNavigate();
-
+{/**ვაგზავნი პოსტ რექვესტს backend-ში და ვბრუნდები home როუტზე */}
   const onSubmit = (data: FieldValues) => {
     setInptData(data)
     fetch('http://localhost:8080/Inventories', {

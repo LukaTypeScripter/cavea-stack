@@ -1,6 +1,5 @@
 import { log } from "console";
 import React, { useEffect, useState } from "react";
-import { Modal, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import ModalShow from "../components/Modal";
 import Spinner from "../components/Spinner";
@@ -20,23 +19,14 @@ export default function Listing() {
   const [userIdToDelete, setUserIdToDelete] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 const items = users.length
-
+{/**fetching-ნივთებს და სორტირებას ვაკეთბ */}
 useEffect(() => {
   setIsLoading(true);
   fetch(`/Inventories?page=${currentPage}&limit=${itemsPerPage}`)
     .then((res) => res.json())
     .then((data) => {
-      data.sort((a: User, b: User) => {
-        const nameCompare = a.name.localeCompare(b.name);
-        if (nameCompare !== 0) {
-          return nameCompare;
-        }
-        const locationCompare = a.location.localeCompare(b.location);
-        if (locationCompare !== 0) {
-          return locationCompare;
-        }
-        return a.price - b.price;
-      });
+      data.sort((a:User, b:User) => a.name.localeCompare(b.name));
+      data.sort((a:User, b:User) => a.price - b.price);
       setUsers(data);
       setIsLoading(false);
     })
@@ -176,6 +166,7 @@ const renderTableData = displayedUsers.map((user, index) => (
 
   return (
     <>
+    {/**ტერნერული ოპერაცია რადგან ბევრი დათა როცა გვაქ დრო სჭირდება რესპონსს. */}
     {isLoading ? (<Spinner/>) : (
         <div className="container">
         <div className="card">
