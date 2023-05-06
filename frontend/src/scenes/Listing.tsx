@@ -139,16 +139,8 @@ useEffect(() => {
   const handleLocationChange = (event:any) => {
     setSelectedLocation(event.target.value);
   };
-  useEffect(() => {
-    const getUsers = async () => {
-      const url = selectedLocation ? `/users?location=${selectedLocation}` : '/users';
-      const response = await fetch(url);
-      const data = await response.json();
-      setUsers(data);
-    };
-    getUsers();
-  }, [selectedLocation]);
-  console.log(users);
+ 
+
   {
     /**ეს იმიტომ გავაკეთე რომ შეგვეძლოს კოდის გამარტივება და პატარა ნაწილებად დაყოფა,ადვილად მენეჯმენტისთვის. */
   }
