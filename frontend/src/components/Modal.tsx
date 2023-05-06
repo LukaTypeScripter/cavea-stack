@@ -12,12 +12,12 @@ function ModalShow({showModal,setShowModal,deleteUser,userIdToDelete}:Props) {
     <>
            <Modal show={showModal} onHide={() => setShowModal(false)}>
   <Modal.Header closeButton>
-    <Modal.Title>Confirm deletion</Modal.Title>
+    <Modal.Title>დაადასტურე წაშლა!</Modal.Title>
   </Modal.Header>
-  <Modal.Body>Are you sure you want to delete this user?</Modal.Body>
+  <Modal.Body>დარწმუნებული ხართ,რომ გსურთ ამის წაშლა?</Modal.Body>
   <Modal.Footer>
-    <Button variant="secondary" onClick={() => setShowModal(false)}>Cancel</Button>
-    <Button variant="primary" onClick={() => deleteUser(userIdToDelete)}>Delete</Button>
+    <Button variant="secondary" onClick={() => setShowModal(false)}>უკან დაბრუნება</Button>
+    <Button variant="btn btn-danger" onClick={() => deleteUser(userIdToDelete)}>წაშლა</Button>
   </Modal.Footer>
 </Modal>
     </>
