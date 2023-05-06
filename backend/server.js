@@ -17,7 +17,7 @@ const sequelize = new Sequelize('postgres', 'postgres', 'Tuta68686', {
 });
 
 // define a User model
-const User = sequelize.define('user', {
+const User = sequelize.define('Inventories', {
   name: {
     type: Sequelize.STRING,
   },
@@ -56,12 +56,12 @@ sequelize.sync()
   });
 
 // create a new user
-app.post('/users', (req, res) => {
+app.post('/Inventories', (req, res) => {
   const { name, price, location } = req.body;
   
   User.create({ name, price, location })
     .then(() => {
-      // find all users with the new item and sort the results
+      
       const order = req.query.sort === 'price'
         ? [['price', 'ASC']]
         : [['name', 'ASC']];
@@ -77,7 +77,7 @@ app.post('/users', (req, res) => {
 
 
 // get all users
-app.get('/users', (req, res) => {
+app.get('/Inventories', (req, res) => {
   User.findAll()
     .then((users) => {
       res.json(users);
@@ -86,8 +86,39 @@ app.get('/users', (req, res) => {
       res.status(500).json({ error: error.message });
     });
 });
+// get all users
+app.get('/Inventories', (req, res) => {
+  const limit = req.query.limit || 10;
+  const page = req.query.page || 1; 
+  const offset = (page - 1) * limit;
+
+  const order = req.query.sort === 'price'
+    ? [['price', 'ASC']]
+    : [['name', 'ASC']]; 
+
+  User.findAndCountAll({
+    limit: limit,
+    offset: offset,
+    order: order 
+  })
+    .then((result) => {
+      const users = result.rows;
+      const count = result.count;
+      const totalPages = Math.ceil(count / limit);
+
+      res.json({
+        users: users,
+        count: count,
+        totalPages: totalPages,
+        currentPage: page,
+      });
+    })
+    .catch((error) => {
+      res.status(500).json({ error: error.message });
+    });
+});
 // get a user by id
-app.get('/users/:id', (req, res) => {
+app.get('/Inventories/:id', (req, res) => {
   const { id } = req.params;
   User.findByPk(id)
     .then((user) => {
@@ -102,25 +133,10 @@ app.get('/users/:id', (req, res) => {
     });
 });
 
-// update a user by id
-// app.put('/users/:id', (req, res) => {
-//   const { id } = req.params;
-//   const { name, location, price } = req.body;
-//   User.update({ name, location, price }, { where: { id } })
-//     .then(([rowsUpdated]) => {
-//       if (rowsUpdated > 0) {
-//         res.json({ message: 'User updated successfully' });
-//       } else {
-//         res.status(404).json({ error: 'User not found' });
-//       }
-//     })
-//     .catch((error) => {
-//       res.status(400).json({ error: error.message });
-//     });
-// });
+
 
 // delete a user by id
-app.delete('/users/:id', (req, res) => {
+app.delete('/Inventories/:id', (req, res) => {
   const { id } = req.params;
   User.destroy({ where: { id } })
     .then((rowsDeleted) => {
