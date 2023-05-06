@@ -4,19 +4,19 @@ const Sequelize = require('sequelize');
 const bodyParser = require('body-parser');
 const app = express();
 
-// Allow only requests from port 3000
+//აქ ვაკეთებ ქორსს რომ მარტო 3000 ზე მყოფ პორტს ქონდეს წვდომა სერვერზე
 const corsOptions = {
   origin: 'http://localhost:3000'
 };
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
-// create a new Sequelize instance with the database connection details
+//აქ ვუკავშირდები database-ს sequlize-ით
 const sequelize = new Sequelize('postgres', 'postgres', 'Tuta68686', {
   host: 'localhost',
   dialect: 'postgres',
 });
 
-// define a User model
+//აქ უკვე table-ის ტიპებს ვქმნი
 const User = sequelize.define('Inventories', {
   name: {
     type: Sequelize.STRING,
@@ -29,6 +29,7 @@ const User = sequelize.define('Inventories', {
     unique: true,
   },
 });
+//ეს ტესტირებისთვის გავაკეთე რომ დამეტესტა სერვერი big data-ს როგორ გაუმკლავდებდა
 const testData = [];
 for (let i = 0; i < 300; i++) {
   testData.push({
@@ -38,7 +39,7 @@ for (let i = 0; i < 300; i++) {
   });
 }
 
-// insert the test data into the database
+// აქ insert-ს ვაკეთებ data-სი database-ში
 User.bulkCreate(testData)
   .then(() => {
     console.log('Test data inserted successfully.');
@@ -46,7 +47,7 @@ User.bulkCreate(testData)
   .catch((error) => {
     console.error('Unable to insert test data:', error);
   });
-// sync the model with the database
+// აქ log - გამომაქვს დაუკავშრდა თუ არა database-ს
 sequelize.sync()
   .then(() => {
     console.log('Database synced successfully.');
@@ -55,7 +56,7 @@ sequelize.sync()
     console.error('Unable to sync database:', error);
   });
 
-// create a new user
+// აქ ვქმნი ახალ inv-ის რომ შემდეგ fetch-ვქნა 
 app.post('/Inventories', (req, res) => {
   const { name, price, location } = req.body;
   
@@ -76,7 +77,7 @@ app.post('/Inventories', (req, res) => {
 });
 
 
-// get all users
+//ვიპოვოთ ყველა item
 app.get('/Inventories', (req, res) => {
   User.findAll()
     .then((users) => {
@@ -86,38 +87,8 @@ app.get('/Inventories', (req, res) => {
       res.status(500).json({ error: error.message });
     });
 });
-// get all users
-app.get('/Inventories', (req, res) => {
-  const limit = req.query.limit || 10;
-  const page = req.query.page || 1; 
-  const offset = (page - 1) * limit;
 
-  const order = req.query.sort === 'price'
-    ? [['price', 'ASC']]
-    : [['name', 'ASC']]; 
-
-  User.findAndCountAll({
-    limit: limit,
-    offset: offset,
-    order: order 
-  })
-    .then((result) => {
-      const users = result.rows;
-      const count = result.count;
-      const totalPages = Math.ceil(count / limit);
-
-      res.json({
-        users: users,
-        count: count,
-        totalPages: totalPages,
-        currentPage: page,
-      });
-    })
-    .catch((error) => {
-      res.status(500).json({ error: error.message });
-    });
-});
-// get a user by id
+// ვიპოვოთ inv-ში id-ის მიხედვით
 app.get('/Inventories/:id', (req, res) => {
   const { id } = req.params;
   User.findByPk(id)
@@ -135,7 +106,7 @@ app.get('/Inventories/:id', (req, res) => {
 
 
 
-// delete a user by id
+// აქ ვშლით ნივთებს
 app.delete('/Inventories/:id', (req, res) => {
   const { id } = req.params;
   User.destroy({ where: { id } })
@@ -151,7 +122,7 @@ app.delete('/Inventories/:id', (req, res) => {
     });
 });
 
-// start the server
+// სერვერთან დაკავშრება
 app.listen(8080, () => {
   console.log('Server is running on port 8080.');
 });
