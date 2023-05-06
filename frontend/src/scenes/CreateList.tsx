@@ -4,18 +4,16 @@ import { Link } from "react-router-dom";
 import { FieldValues,  useForm } from 'react-hook-form';
 import { log } from "console";
 import { useNavigate } from 'react-router-dom';
+import { Button, Modal } from "react-bootstrap";
 export default function CreateList() {
-  const [id, setId] = useState("");
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [location, setLocation] = useState("");
+ 
   const [inptData,setInptData] = useState({})
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
 
   const onSubmit = (data: FieldValues) => {
     setInptData(data)
-    fetch('http://localhost:8080/users', {
+    fetch('http://localhost:8080/Inventories', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
@@ -26,8 +24,11 @@ export default function CreateList() {
 .then(data => {
   console.log(data)
   navigate('/')
+ 
 })
-.catch(error => console.error(error));
+.catch(error => {
+  console.log(error)
+});
   };
  console.log(inptData);
  
@@ -82,7 +83,7 @@ export default function CreateList() {
                       </Link>
                       
                     </div>
-                    
+      
                   </div>
                   </form>
                 </div>
