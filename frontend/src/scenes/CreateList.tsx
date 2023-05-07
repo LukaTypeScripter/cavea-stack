@@ -13,25 +13,23 @@ export default function CreateList() {
   {/**ეს კი გვეხმარება დავბრუნდეთ როუტზე */}
   const navigate = useNavigate();
 {/**ვაგზავნი პოსტ რექვესტს backend-ში და ვბრუნდები home როუტზე */}
-  const onSubmit = (data: FieldValues) => {
-    setInptData(data)
-    fetch('http://localhost:8080/Inventories', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify(data)
-})
-.then(response => response.json())
-.then(data => {
-  console.log(data)
-  navigate('/')
- 
-})
-.catch(error => {
-  console.log(error)
-});
-  };
+const onSubmit = async (data: FieldValues) => {
+  setInptData(data);
+  try {
+    const response = await fetch('http://localhost:8080/Inventories', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+    const responseData = await response.json();
+    console.log(responseData);
+    navigate('/');
+  } catch (error) {
+    console.log(error);
+  }
+};
  console.log(inptData);
  
   

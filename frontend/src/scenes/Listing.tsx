@@ -21,16 +21,20 @@ export default function Listing() {
 const items = users.length
 {/**fetching-ნივთებს და სორტირებას ვაკეთბ */}
 useEffect(() => {
-  setIsLoading(true);
-  fetch(`/Inventories?page=${currentPage}&limit=${itemsPerPage}`)
-    .then((res) => res.json())
-    .then((data) => {
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(`/Inventories?page=${currentPage}&limit=${itemsPerPage}`);
+      const data = await res.json();
       data.sort((a:User, b:User) => a.name.localeCompare(b.name));
       data.sort((a:User, b:User) => a.price - b.price);
       setUsers(data);
       setIsLoading(false);
-    })
-    .catch((err) => console.log(err));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  fetchData();
 }, []);
 
 
@@ -44,16 +48,17 @@ useEffect(() => {
   {
     /**წაშლის ლოგიკა*/
   }
-  const deleteUser = (id: number) => {
-    fetch(`http://localhost:8080/Inventories/${id}`, {
-      method: "DELETE",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setUsers(users.filter((user) => user.id !== userIdToDelete));
-        setShowModal(false);
-      })
-      .catch((error) => console.log(error));
+  const deleteUser = async (id: number) => {
+    try {
+      const response = await fetch(`http://localhost:8080/Inventories/${id}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+      setUsers(users.filter((user) => user.id !== userIdToDelete));
+      setShowModal(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
  
   

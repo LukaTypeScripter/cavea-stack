@@ -59,6 +59,7 @@ sequelize.sync()
 // აქ ვქმნი ახალ inv-ის რომ შემდეგ fetch-ვქნა 
 app.post('/Inventories', (req, res) => {
   const { name, price, location } = req.body;
+  const { page = 1, limit = 10 } = req.query;
   
   User.create({ name, price, location })
     .then(() => {
@@ -67,12 +68,14 @@ app.post('/Inventories', (req, res) => {
         ? [['price', 'ASC']]
         : [['name', 'ASC']];
       
-      return User.findAll({
+      return User.findAndCountAll({
         where: { location },
         order,
+        offset: (page - 1) * limit,
+        limit,
       });
     })
-    .then(users => res.json(users))
+    .then(({ count, rows }) => res.json({ total: count, pages: Math.ceil(count / limit), page, limit, data: rows }))
     .catch(error => res.status(500).json({ error: error.message }));
 });
 
